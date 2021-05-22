@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Transacciones</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+ 
+  <ion-item>
+    <ion-label>Bancos</ion-label>
+    <ion-select placeholder="Seleccione uno" [(ngModel)]="dato" [compareWith]="compareFn">
+      <ion-select-option interface="popover" *ngFor="let dato of array" [value]="dato.name">{{dato.name}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input [(ngModel)]="receptor.nombre"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Correo</ion-label>
+    <ion-input [(ngModel)]="receptor.correo"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Tipo de Cuenta</ion-label>
+    <ion-select placeholder="Seleccione uno" [(ngModel)]="tipoCuentaUnique" [compareWith]="compareFn">
+      <ion-select-option interface="popover" *ngFor="let tipo of tipoCuentas" [value]="tipo">{{tipo}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Numero de Cuenta</ion-label>
+    <ion-input [(ngModel)]="receptor.numeroCuenta"></ion-input>
+  </ion-item>
+ 
+  <ion-item>
+    <ion-label position="floating">Numero de Cedula</ion-label>
+    <ion-input [(ngModel)]="receptor.numeroDocumento"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Monto</ion-label>
+    <ion-input [(ngModel)]="transaccion.monto"></ion-input>
+  </ion-item>
+     
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+     
+      <ion-col size="12" class="ion-text-center">
+        <ion-button color="success" (click)="crearTransaccion()">Ingresar</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+ 
+
+</ion-content>
