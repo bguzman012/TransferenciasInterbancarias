@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d6adb1f1-7a54-490b-9388-6cabbba2bc90" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="4cc443cc-a018-476b-9412-b1b66014957c" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="LIGAdequito00" database="banco" />
+	</db:config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="efc4df88-99d2-4dd9-aeb7-74e7bcc74150" >
+		<http:listener-connection host="0.0.0.0" port="8088" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="87b2cca7-8b3f-47de-87cc-703ee4e54411">
+		<http:request-connection host="swiftcodesapi.com"/>
+	</http:request-config>
+	<db:config name="Database_Config1" doc:name="Database Config" doc:id="d5ee9655-3c28-4033-aaa1-b65417eaac28" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="LIGAdequito00" database="banksgb" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="9e6b58c0-1733-418d-ab49-c333cdfc6cfa" basePath="/bancos" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="backtransferenciasFlow1" doc:id="9f99a6c3-7e8b-4b61-bd59-65d3a51d5fe7" >
+		<http:listener doc:name="Listener" doc:id="88906752-16d5-40c8-b4a3-a0ae34070b1f" config-ref="HTTP_Listener_config" path="/loggin" outputMimeType="application/json">
+			<http:response >
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "*",
+	"Access-Control-Allow-Headers" : "Content-Type, Accept"
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<db:select doc:name="Select" doc:id="1b7671ec-34c2-4f4d-80c3-ab79c9896a10" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT idUsuario FROM usuario where correo = :correo AND contra = :contra]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"correo":attributes.queryParams."correo","contra":attributes.queryParams."contra"}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="406a2631-c034-4a9d-944b-e48e1405a961" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="backtransferenciasFlow2" doc:id="d4542859-e67a-4ecf-add8-b08bc2bd4d47" >
+		<http:listener doc:name="ListenerTockeni" doc:id="e71bc88b-e3d7-4b41-add5-7f6c3cd01b23" config-ref="HTTP_Listener_config" path="/tockenizar" outputMimeType="application/json">
+			<http:response>
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "*",
+	"Access-Control-Allow-Headers" : "Content-Type, Accept"
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<java:invoke-static method="holaMundo(java.lang.String)" doc:name="Invoke static" doc:id="f6663fd7-0299-4484-bf48-58b021f0d4a6" class="com.demo.tockenGenerate" outputMimeType="application/json">
+			<java:args ><![CDATA[#[{correo : attributes.queryParams."correo"}]]]></java:args>
+		</java:invoke-static>
+		<ee:transform doc:name="Transform Message" doc:id="c13a8c10-aa9c-4659-bd72-4458578ca564" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="backtransferenciasFlow3" doc:id="12f1e156-a2b2-43a2-b2c2-656733493762" >
+		<http:listener doc:name="ListenerBancos" doc:id="62e1a96b-b5c2-4bf0-81c8-fc3a737b6161" config-ref="HTTP_Listener_config" path="/bancos" allowedMethods="GET">
+			<http:response >
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "*",
+	"Access-Control-Allow-Headers" : "Content-Type, Accept"
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<http:request method="GET" doc:name="Request22" doc:id="2610fd13-1ea9-4ea1-b6f2-7b025638843b" config-ref="HTTP_Request_configuration" path="/v1/banks/">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"x-api-key" : "sk_e8d7043608b4408ebec00e13ba02b0aba726baf51ace9fae1e251f14b3d0930a",
+	"Accept" : "application/json"
+}]]]></http:headers>
+		</http:request>
+	</flow>
+	<flow name="backtransferenciasTransferenciasBancarias" doc:id="1c451a55-2ef4-4ec4-8c93-f8b024bacfce" >
+		<http:listener doc:name="Listener" doc:id="01c78ce3-2596-4c1d-b5dc-27a19dab4fe1" config-ref="HTTP_Listener_config" path="/transferencias_bancarias" outputMimeType="application/json" allowedMethods="POST">
+			<http:response>
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "GET, POST, PUT, DELETE, OPTIONS, HEAD",
+	"Content-Type" : "application/json",
+	"Access-Control-Allow-Headers" : "origin, content-type, accept, authorization",
+	"Access-Control-Request-Method" : "*",
+	"Access-Control-Allow-Credentials" : "true",
+	"Access-Control-Max-Age" : "1209600"
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<choice doc:name="Choice" doc:id="a447bbcb-df26-4696-ac19-176fb51b2c43" >
+			<when expression="payload.receptor.nombreInstitucion == &quot;'BANK SGB' PJSC&quot;">
+				<set-variable value="#[payload.monto]" doc:name="Set Variable" doc:id="6ac703f6-06bf-485e-8770-ce397c19bfc4" variableName="monto" />
+				<set-variable value="#[payload.receptor]" doc:name="Set Variable" doc:id="0455261b-7634-4747-9601-b63b6c549ddb" variableName="idCuenta"/>
+				<set-variable value="#[payload.fecha]" doc:name="Set Variable" doc:id="7aacf9d4-2c7f-40bd-89fc-3b5bdcf6fb6f" variableName="fecha"/>
+				<set-variable value="#[payload.hora]" doc:name="Set Variable" doc:id="f1e88f0f-c0c2-46da-837c-791967a0791c" variableName="hora"/>
+				<set-variable value="#[payload.cuenta.usuario.idUsuario]" doc:name="Set Variable" doc:id="b074cbf2-aa6b-4335-a59e-379c08dd86b1" variableName="idUser"/>
+				<logger level="INFO" doc:name="Logger" doc:id="0700de04-ab8a-4e4b-a3dd-c7dcb40e674f" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"messageId":vars.idUser	&#10;}]'/>
+				<db:insert doc:name="Insert" doc:id="32e1f6d7-4c2a-4270-acc7-25df6e5b1a81" config-ref="Database_Config" autoGenerateKeys="true">
+									<db:sql><![CDATA[INSERT INTO informacionremitente(nombreInstitucion,tipoCuenta,numeroDocumento,numeroCuenta,nombre,correo)
+VALUES (:nombreInstitucion,"RoundRobbinOne",:numeroDocumento,:numeroCuenta,:nombre,:correo)
+]]></db:sql>
+									<db:input-parameters><![CDATA[#[{
+	nombreInstitucion : payload.receptor.nombreInstitucion,
+	tipoCuenta:payload.receptor.tipoCuenta,
+	numeroDocumento:payload.receptor.numeroDocumento,
+	numeroCuenta:payload.receptor.numeroCuenta,
+	nombre:payload.receptor.nombre,
+	correo:payload.receptor.correo
+}]]]></db:input-parameters>
+								</db:insert>
+				<set-variable value="#[payload.generatedKeys[0]]" doc:name="Set Variable" doc:id="22a4f3c5-9359-466c-9191-529151356a71" variableName="lastGenerate"/>
+				<db:insert doc:name="Insert" doc:id="03ed6a04-4495-4016-87e6-96a5087b1edd" config-ref="Database_Config">
+									<db:sql><![CDATA[INSERT INTO transaccion(fecha, hora, monto,nombreBancoRemitente, fk_remitente,fk_cuenta)
+VALUES (:fecha,:hora,:monto, 'BancoPrincipal', :remitente_fk,(Select idCuenta from cuenta where fk_user = :tipoCuentaVar))]]></db:sql>
+									<db:input-parameters><![CDATA[#[{
+	monto : vars.monto,
+	tipoCuentaVar: vars.idUser,
+	remitente_fk: vars.lastGenerate,
+	fecha: vars.fecha,
+	hora : vars.hora,
+}]]]></db:input-parameters>
+								</db:insert>
+				<db:update doc:name="Update" doc:id="45ff0a56-3231-4d27-b4a9-14a556698685" config-ref="Database_Config">
+					<db:sql ><![CDATA[Update cuenta SET monto = monto-:monto22 WHERE fk_user = :tipoCuentaVar;]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	tipoCuentaVar: vars.idUser,
+	monto22 : vars.monto
+}]]]></db:input-parameters>
+				</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="15296f4c-481c-41bb-9ac2-7b3c141e9a36">
+									<ee:message>
+										<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+			</when>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="954b7fb4-7aae-43e4-8d39-fd8184301777" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Status": 200,
+	"message": "Exitosa"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+</mule>

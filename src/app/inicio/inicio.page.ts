@@ -27,8 +27,8 @@ export class InicioPage implements OnInit {
   transaccion: Transaccion = new Transaccion();
   tipoCuentaUnique: any
   usuario: Usuario = new Usuario()
+  transferencias: Observable<any[]>;
 
-  tiitle='proxy';
 
 
 
@@ -73,14 +73,40 @@ export class InicioPage implements OnInit {
     this.transaccion.cuenta = this.cuenta
 
     console.log(JSON.stringify(this.transaccion))
-    let postData = {
-      id: "5",
-      correo:"spanish"
-    }
+    
     this.transferService.makeATransfer(JSON.stringify(this.transaccion)).subscribe(res =>{
      
-        console.log(res);
       });
   }
+
+  listarTransacciones(){
+    this.usuario.idUsuario = localStorage.getItem("idUsuario")
+    this.transferencias = this.transferService.getTransferencias(this.usuario)
+    this.transferencias.forEach(element => {
+      console.log(element)
+      
+    })
+    this.router.navigate(["/transferencias"]); 
+    
+
+  }
+
+  showMessageToken(){
+    this.alertController.create({
+      header: 'Transaccion realizada con exito',
+      message: 'La transaccion se ha realizado con exito',
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            
+          }
+        }
+      ]
+    }).then(res => {
+      res.present();
+    });
+  }
+
 
 }
