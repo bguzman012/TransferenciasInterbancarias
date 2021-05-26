@@ -16,6 +16,7 @@ export class TransferenciasPage implements OnInit {
 
   constructor(public transferService: TransferenciasService,private route: ActivatedRoute, private router: Router) { }
 
+  //se obtienen las transferencias hechas por el usaurio
   ngOnInit() {
     this.usuario.idUsuario = localStorage.getItem("idUsuario")
     this.transferencias = this.transferService.getTransferencias(this.usuario)
@@ -24,6 +25,7 @@ export class TransferenciasPage implements OnInit {
       
     })
   }
+  //se envian los datos para la creacion de la transaccion
   crearTransaccion(){
     this.router.navigate(["/inicio"]); 
 

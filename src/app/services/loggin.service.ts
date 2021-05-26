@@ -15,13 +15,13 @@ export class LogginService {
   
 
   constructor(public http: HttpClient) { }
-
+   //se hace una solicitud get para el logeo
   getUser(user:Usuario): Observable<any>{
     return this.http.get<any>(this.path + "?correo=" + user.correo + "&contra="+user.contra)
   }
 
 
-  
+  // se procede con la realización del token para el logeo
   getToken(correo:any){
     return new Promise(resolve=>{
       this.http.get(this.path2 + "?correo=" + correo).subscribe(data=>{
@@ -31,7 +31,7 @@ export class LogginService {
       });
     });
   }
-
+// se obtiene el listado de los bancos
   getBancos(){
     return new Promise(resolve=>{
       this.http.get(this.path3).subscribe(data=>{

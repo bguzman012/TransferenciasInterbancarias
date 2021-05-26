@@ -16,7 +16,8 @@ import { Usuario } from '../models/Usuario';
   styleUrls: ['./inicio.page.scss'],
 })
 export class InicioPage implements OnInit {
-
+  
+  //Se definen las variables que usaremos para listar las transacciones
   bancos: any;
   bancos2: any;
   array: any;
@@ -31,11 +32,11 @@ export class InicioPage implements OnInit {
 
 
 
-
+  //Constructor que llama a todos los service que hemos creado
   constructor(public toastController: ToastController, public serviceLoggin: LogginService, public transferService: TransferenciasService, public alertController: AlertController, private route: ActivatedRoute, private router: Router) { }
 
+  //Obtenemos los nombres de los bancos dados por MuleSoft
   ngOnInit() {
-
     this.bancos = this.serviceLoggin.getBancos()
     this.serviceLoggin.getBancos()
       .then(data => {
@@ -54,11 +55,13 @@ export class InicioPage implements OnInit {
 
   }
 
+  //Se recogen los datos llenados anteriormente para poder realizar la transaccion 
   crearTransaccion() {
     console.log(this.dato)
     console.log(this.tipoCuentaUnique)
     this.usuario.idUsuario = localStorage.getItem("idUsuario")
     console.log(this.usuario.idUsuario)
+    //se llenan los objetos con los datos
     this.receptor.nombreInstitucion = this.dato
     this.receptor.tipoCuenta = this.tipoCuentaUnique
     this.transaccion.receptor = this.receptor
@@ -78,7 +81,7 @@ export class InicioPage implements OnInit {
      
       });
   }
-
+  //lista las transacciones hechas por el usuario
   listarTransacciones(){
     this.usuario.idUsuario = localStorage.getItem("idUsuario")
     this.transferencias = this.transferService.getTransferencias(this.usuario)
@@ -91,6 +94,7 @@ export class InicioPage implements OnInit {
 
   }
 
+  //si la transaccion fue hecha con exito aparece un mensaje de notificacion
   showMessageToken(){
     this.alertController.create({
       header: 'Transaccion realizada con exito',
