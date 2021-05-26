@@ -11,7 +11,8 @@ import { Observable } from 'rxjs';
 })
 export class TransferenciasService {
 
-  path: string = '/transferencias_bancarias?correo=spanish';
+  path: string = '/transferencias_bancarias';
+  path2: string = 'http://localhost:8081/listar_transferencias';
 
   private httpHeaders = new HttpHeaders({
     "Access-Control-Request-Method": "POST", "Access-Control-Request-Headers":"Content-Type",
@@ -23,5 +24,9 @@ export class TransferenciasService {
   makeATransfer(postData: any) {
 
     return this.http.post<Response>(this.path, postData, { headers: this.httpHeaders });
+  }
+
+  getTransferencias(user:Usuario): Observable<any>{
+    return this.http.get<any>(this.path2 + "?idUser=" + user.idUsuario)
   }
 }
