@@ -9,9 +9,11 @@ import { Observable } from 'rxjs';
 })
 export class LogginService {
 
-  path : string = 'http://localhost:8081/loggin';
-  path2 : string = 'http://localhost:8081/tockenizar';
-  path3 : string = 'http://localhost:8081/bancos';
+  //dwenfweeu
+
+  path : string = 'http://10.168.0.5:8081/loggin';
+  path2 : string = 'http://10.168.0.5:8081/tockenizar';
+  path3 : string = 'http://10.168.0.5:8081/bancos';
   
 
   constructor(public http: HttpClient) { }
