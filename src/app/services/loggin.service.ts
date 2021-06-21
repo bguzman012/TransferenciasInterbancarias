@@ -11,7 +11,7 @@ export class LogginService {
 
   //dwenfweeu
 
-  path : string = 'http://10.168.0.50:8081/loggin';
+  path : string = 'http://10.168.0.5:8081/loggin';
   path2 : string = 'http://10.168.0.5:8081/tockenizar';
   path3 : string = 'http://10.168.0.5:8081/bancos';
   
