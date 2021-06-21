@@ -17,9 +17,9 @@ import { Usuario } from '../models/Usuario';
 })
 export class InicioPage implements OnInit {
 
-  bancos: any;
+  bancos: any = [];
   bancos2: any;
-  array: any;
+  array: any = [];
   dato: any
   cuenta: Cuenta = new Cuenta();
   tipoCuentas: any;
@@ -32,27 +32,31 @@ export class InicioPage implements OnInit {
 
 
 
+
   constructor(public toastController: ToastController, public serviceLoggin: LogginService, public transferService: TransferenciasService, public alertController: AlertController, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
 
-    this.bancos = this.serviceLoggin.getBancos()
-    this.serviceLoggin.getBancos()
-      .then(data => {
-        console.log(data)
-        this.pasarDatoArray(data["data"])
-      });
+    let banco
+    banco = {
+      name: "'BANK SGB' PJSC"
+    }
+    let banco2
+    banco2 = {
+      name: "'BANK MOSCOW-MINSK' JSC"
+    }
+    let banco3
+    banco3 = {
+      name: "'BELAGROPROMBANK' JSC"
+    }
+
+    this.array.push(banco)
+    this.array.push(banco2)
+    this.array.push(banco3)
+    console.log(this.array)
     this.tipoCuentas = ['Ahorro', 'Corriente'];
   }
 
-  pasarDatoArray(param: any) {
-
-    this.array = param
-    this.array.forEach(element => {
-      console.log(element)
-    });
-
-  }
 
   crearTransaccion() {
     console.log(this.dato)
