@@ -18,6 +18,7 @@ export class LogginPage implements OnInit {
   usuarios: Observable<any[]>;
   token: any;
   length: any;
+  //datos del temporizador que nos ayudara a contar el tiempo para el ingreso del codigo de verificación que sea de un minuto
   public centesimas: number = 0;
   public minutos: number = 59;
   public segundos: number = 0;
@@ -43,7 +44,8 @@ export class LogginPage implements OnInit {
 
   }
   
-
+  //funcion que llama al service para comenzar a procesar el logeo de ser correcto o incorrecto el logeo se mostrara un mensaje
+  // de notificacion
   doLogin(){
     this.usuarios = this.serviceLoggin.getUser(this.usuario)
     
@@ -77,6 +79,7 @@ export class LogginPage implements OnInit {
 
   }
 
+  //contador del reloj que se activara una ves iniciada la sesion
   start() {
 
     this.contador = setInterval(() => {
@@ -106,6 +109,7 @@ export class LogginPage implements OnInit {
     clearInterval(this.contador);
   }
 
+  //se detiene el reloj una ves ingresada el codigo de verificacion correctamente
   stop() {
 
     if (!this.isRun) {
@@ -126,6 +130,7 @@ export class LogginPage implements OnInit {
   }
  
 
+  // al iniciar sesion correctamente se mostrara un alerta
   presentPrompt() {
     let alert = this.alertController.create({
       header: 'Inicio de Sesion Exitoso',
@@ -161,6 +166,9 @@ export class LogginPage implements OnInit {
     });
   }
 
+  //cuando el usuario inicia sesion se le notificará que debe ingresar un codigo de verficacion
+  // si al pasar el tiempo limite no se ha ingresado el codigo de seguridad se le dará la oportunidad al usuario
+  // de generar el codigo nuevamente
   showConfirm() {
     this.alertController.create({
       header: 'Datos correctos',
@@ -188,6 +196,7 @@ export class LogginPage implements OnInit {
     });
   }
 
+  //mensaje de alerta si se ha pasado la prueba de seguridad
   showMessageToken(para:any){
     this.alertController.create({
       header: 'Inicio de Sesion Exitoso',
@@ -205,6 +214,7 @@ export class LogginPage implements OnInit {
     });
   }
 
+  //mensaje de alerta si no se ha inicado sesion correctamente
   showAlert() {
 
     this.alertController.create({
