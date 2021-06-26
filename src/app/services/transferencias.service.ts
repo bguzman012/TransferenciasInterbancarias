@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class TransferenciasService {
 
   path: string = '/transferencias_bancarias';
-  path2: string = 'http://34.94.29.180:8081/listar_transferencias';
+  path2: string = 'http://34.94.191.122:8081/listar_transferencias';
 
   private httpHeaders = new HttpHeaders({
     "Access-Control-Request-Method": "POST", "Access-Control-Request-Headers":"Content-Type",
