@@ -1,6 +1,6 @@
 {
     "/transferencias_bancarias/*":{
-        "target":"http://34.94.29.180:8081",
+        "target":"http://34.94.191.122:8081",
         "secure":false,
         "changeOrigin":true
     }
